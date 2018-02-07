@@ -8,7 +8,8 @@ const { Todo } = require("../models/todo");
 const todos = [
   {
     _id: new ObjectID(),
-    text: "First Todo"
+    text: "First Todo",
+    completed: false
   },
   {
     _id: new ObjectID(),
@@ -147,23 +148,23 @@ describe("DELETE /todos/:id", () => {
 
 describe("PATCH /todos/id", () => {
   it("should update a todo", done => {
-    var id = todos[1]._id.toHexString();
+    var id = todos[0]._id.toHexString();
     var updatedTodo = {
-      "completed": false
+      completed: true
     };
     request(app)
       .patch(`/todos/${id}`)
       .send(updatedTodo)
       .expect(200)
       .expect(res => {
-        expect(res.body.todo.completed).toBe(false);
+        expect(res.body.todo.completed).toBe(true);
       })
       .end(done);
   });
-  it("should clear completedAt when todo is not completed",done=>{
+  it("should clear completedAt when todo is not completed", done => {
     var id = todos[1]._id.toHexString();
     var updatedTodo = {
-      "completed": false
+      completed: false
     };
     request(app)
       .patch(`/todos/${id}`)
@@ -172,6 +173,28 @@ describe("PATCH /todos/id", () => {
       .expect(res => {
         expect(res.body.todo.completedAt).toNotExist();
       })
+      .end(done);
+  });
+  it("should return 404 with non-valid id", done => {
+    var id = "123";
+    var updatedTodo = {
+      completed: false
+    };
+    request(app)
+      .patch(`/todos/${id}`)
+      .send(updatedTodo)
+      .expect(404)
+      .end(done);
+  });
+  it("should return 404 with non exist id ", done => {
+    var id = new ObjectID();
+    var updatedTodo = {
+      completed: false
+    };
+    request(app)
+      .patch(`/todos/${id}`)
+      .send(updatedTodo)
+      .expect(404)
       .end(done);
   });
 });

@@ -6,7 +6,9 @@ var routes = app => {
   //Get All Todos
   app.get("/todos", todoController.findAll);
   //Find Todo by Id
-  app.get("/todos/:id",todoController.findByID);
+  app.get("/todos/:id", todoController.findByID);
+  //Delete Todo by Id
+  app.delete("/todos/:id", todoController.deleteById);
 };
 
 module.exports = { routes };

@@ -60,7 +60,6 @@ exports.findByID = (req, res) => {
  */
 exports.deleteById = (req, res) => {
   var id = req.params.id;
-  console.log(id);
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }

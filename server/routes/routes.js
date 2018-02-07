@@ -9,6 +9,8 @@ var routes = app => {
   app.get("/todos/:id", todoController.findByID);
   //Delete Todo by Id
   app.delete("/todos/:id", todoController.deleteById);
+  //Update Todo
+  app.patch("/todos/:id",todoController.update)
 };
 
 module.exports = { routes };

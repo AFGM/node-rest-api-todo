@@ -9,6 +9,9 @@
     "debug": "nodemon --inspect ./server/server.js",
     "start": "nodemon ./server/server.js"
   },
+  "engines":{
+    "node": "8.8.1"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

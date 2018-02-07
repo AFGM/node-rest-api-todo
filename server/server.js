@@ -4,14 +4,15 @@ var bodyParser = require("body-parser");
 
 //Local Imports
 var { mongoose } = require("./db/mongoose");
-var {routes} = require("./routes/routes");
+var { routes } = require("./routes/routes");
 
 const app = express();
+const port = process.env.PORT || 3000;
 app.use(bodyParser.json()); //middleware to convert body on javascript object
 routes(app); //app routings
 
-app.listen(3000, () => {
-  console.log("Started on port 3000!");
+app.listen(port, () => {
+  console.log(`Started on port ${port}!`);
 });
 
-module.exports={app}
+module.exports = { app };

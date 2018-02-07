@@ -1,3 +1,5 @@
+//config env
+require("../server/config/config");
 //Library Imports
 var express = require("express");
 var bodyParser = require("body-parser");

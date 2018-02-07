@@ -53,6 +53,11 @@ exports.findByID = (req, res) => {
     });
 };
 
+/**
+ * Delete Todo by Id
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.deleteById = (req, res) => {
   var id = req.params.id;
   console.log(id);

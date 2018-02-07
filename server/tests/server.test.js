@@ -1,23 +1,26 @@
 const expect = require("expect");
 const request = require("supertest");
+const { ObjectID } = require("mongodb");
 
 const { app } = require("../server.js");
 const { Todo } = require("../models/todo");
 
 const todos = [
   {
+    _id: new ObjectID(),
     text: "First Todo"
   },
   {
+    _id: new ObjectID(),
     text: "Second Todo"
   }
 ];
 
 beforeEach(done => {
   Todo.remove({}).then(() => {
-    Todo.insertMany(todos).then(()=>{
+    Todo.insertMany(todos).then(() => {
       done();
-    })
+    });
   });
 });
 
@@ -35,7 +38,7 @@ describe("POST /todos", () => {
         if (err) {
           return done(err);
         }
-        Todo.find({text})
+        Todo.find({ text })
           .then(todos => {
             expect(todos.length).toBe(1);
             expect(todos[0].text).toBe(text);
@@ -64,13 +67,40 @@ describe("POST /todos", () => {
 });
 
 describe("GET /todos", () => {
-  it("should get all todos",done=>{
+  it("should get all todos", done => {
     request(app)
-    .get("/todos")
-    .expect(200)
-    .expect(res=>{
-      expect(res.body.todos.length).toBe(2);
-    })
-    .end(done)
-  })
+      .get("/todos")
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todos.length).toBe(2);
+      })
+      .end(done);
+  });
+});
+
+describe("GET /todos/id", () => {
+  it("should return a valid todo", done => {
+    var id = todos[0]._id.toHexString();
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+      })
+      .end(done);
+  });
+  it("should return 404 for non-valid id", done => {
+    var id = "123";
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(404)
+      .end(done);
+  });
+  it("should return 404 if todo not found", done => {
+    var id = "5a7a05a1a55a69d1b032e807";
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(404)
+      .end(done);
+  });
 });

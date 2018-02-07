@@ -33,10 +33,7 @@
     "nyc": "^11.4.1",
     "supertest": "^2.0.0"
   },
-   "nyc": {
-      "exclude":[
-        "**/config.js",
-        "**/mongoose.js"
-      ]
-   }
+  "nyc": {
+    "exclude": ["**/config.js", "**/mongoose.js", "**/server.js"]
+  }
 }

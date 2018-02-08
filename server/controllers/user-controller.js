@@ -7,12 +7,15 @@ const _ = require("lodash");
  * @param {*} res
  */
 exports.create = (req, res) => {
-  var body = _.pick(req.body, ["email","password"]);
+  var body = _.pick(req.body, ["email", "password"]);
   var user = new User(body);
   user
     .save()
-    .then(user => {
-      res.send(user);
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then(token => {
+      res.header("x-auth", token).send(user); //custom header
     })
     .catch(e => res.status(404).send(e));
 };

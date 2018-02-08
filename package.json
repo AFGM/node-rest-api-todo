@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test":
-      "export NODE_ENV=test && nyc --reporter=html --reporter=text mocha server/**/*.test.js",
+    "test": "export NODE_ENV=test && nyc --reporter=html --reporter=text mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
     "debug": "nodemon --inspect ./server/server.js",
     "start": "node ./server/server.js",
@@ -21,7 +20,8 @@
     "express": "^4.14.0",
     "lodash": "^4.15.0",
     "mongodb": "^2.2.5",
-    "mongoose": "^4.5.9"
+    "mongoose": "^4.5.9",
+    "validator": "^5.6.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
@@ -34,6 +34,10 @@
     "supertest": "^2.0.0"
   },
   "nyc": {
-    "exclude": ["**/config.js", "**/mongoose.js", "**/server.js"]
+    "exclude": [
+      "**/config.js",
+      "**/mongoose.js",
+      "**/server.js"
+    ]
   }
 }

@@ -1,4 +1,5 @@
 var todoController = require("../controllers/todo-controller");
+var userController = require("../controllers/user-controller");
 
 var routes = app => {
   //Create Todo
@@ -10,7 +11,9 @@ var routes = app => {
   //Delete Todo by Id
   app.delete("/todos/:id", todoController.deleteById);
   //Update Todo
-  app.patch("/todos/:id",todoController.update)
+  app.patch("/todos/:id", todoController.update);
+  //Create User
+  app.post("/users",userController.create);
 };
 
 module.exports = { routes };

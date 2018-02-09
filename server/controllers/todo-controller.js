@@ -27,7 +27,7 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   Todo.find({})
     .then(todos => {
-      res.send({ todos }); //send object instead array so can add more fields to KSON
+      res.send({ todos }); //send object instead array so can add more fields to JSON
     })
     .catch(e => res.status(400).send(e));
 };

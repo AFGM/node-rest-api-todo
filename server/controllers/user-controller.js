@@ -19,3 +19,7 @@ exports.create = (req, res) => {
     })
     .catch(e => res.status(404).send(e));
 };
+
+exports.info = (req, res) => {
+  res.send(req.user);
+};

@@ -1,5 +1,6 @@
 var todoController = require("../controllers/todo-controller");
 var userController = require("../controllers/user-controller");
+var { authenticate } = require("../middleware/authenticate");
 
 var routes = app => {
   //Create Todo
@@ -13,7 +14,9 @@ var routes = app => {
   //Update Todo
   app.patch("/todos/:id", todoController.update);
   //Create User
-  app.post("/users",userController.create);
+  app.post("/users", userController.create);
+  //Get user info
+  app.get("/users/me", authenticate,userController.info);
 };
 
 module.exports = { routes };

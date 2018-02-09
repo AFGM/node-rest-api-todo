@@ -16,7 +16,9 @@ var routes = app => {
   //Create User
   app.post("/users", userController.create);
   //Get user info
-  app.get("/users/me", authenticate,userController.info);
+  app.get("/users/me", authenticate, userController.info);
+  //Login
+  app.post("/users/login", userController.login);
 };
 
 module.exports = { routes };

@@ -19,6 +19,8 @@ var routes = app => {
   app.get("/users/me", authenticate, userController.info);
   //Login
   app.post("/users/login", userController.login);
+  //Logout
+  app.delete("/users/me/token",authenticate, userController.logout)
 };
 
 module.exports = { routes };

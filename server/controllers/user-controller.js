@@ -39,11 +39,21 @@ exports.login = (req, res) => {
   User.findByCredentials(body.email, body.password)
     .then(user => {
       return user.generateAuthToken().then(token => {
-        console.log(user);
         res.header("x-auth", token).send(user); //custom header
       });
     })
     .catch(e => {
       res.status(400).send();
     });
+};
+
+exports.logout = (req, res) => {
+  req.user.removeToken(req.token).then(
+    () => {
+      res.status(200).send();
+    },
+    () => {
+      res.status(400).send();
+    }
+  );
 };

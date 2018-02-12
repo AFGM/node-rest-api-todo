@@ -4,7 +4,7 @@ const { ObjectID } = require("mongodb");
 
 const { app } = require("../server.js");
 const { Todo } = require("../models/todo");
-const { todos, populateTodos,users } = require("./seed/seed");
+const { todos, populateTodos, users } = require("./seed/seed");
 
 beforeEach(populateTodos);
 
@@ -70,16 +70,27 @@ describe("GET /todos/id", () => {
     var id = todos[0]._id.toHexString();
     request(app)
       .get(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body.todo.text).toBe(todos[0].text);
       })
       .end(done);
   });
+
+  it("should not return todo doc created by other", done => {
+    var id = todos[0]._id.toHexString();
+    request(app)
+      .get(`/todos/${id}`)
+      .set("x-auth", users[1].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
   it("should return 404 for non-valid id", done => {
     var id = "123";
     request(app)
       .get(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -87,6 +98,7 @@ describe("GET /todos/id", () => {
     var id = "5a7a05a1a55a69d1b032e807";
     request(app)
       .get(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -97,6 +109,7 @@ describe("DELETE /todos/:id", () => {
     var id = todos[1]._id.toHexString();
     request(app)
       .delete(`/todos/${id}`)
+      .set("x-auth", users[1].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body.todo._id).toBe(id);
@@ -114,10 +127,20 @@ describe("DELETE /todos/:id", () => {
         }
       });
   });
+  it("should return a empty todo when delete one created by other", done => {
+    var id = todos[1]._id.toHexString();
+    request(app)
+      .delete(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
   it("should return 404 for invalid id ", done => {
     var id = "123";
     request(app)
       .delete(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -125,6 +148,7 @@ describe("DELETE /todos/:id", () => {
     var id = new ObjectID();
     request(app)
       .delete(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -138,6 +162,7 @@ describe("PATCH /todos/id", () => {
     };
     request(app)
       .patch(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .send(updatedTodo)
       .expect(200)
       .expect(res => {
@@ -145,6 +170,20 @@ describe("PATCH /todos/id", () => {
       })
       .end(done);
   });
+
+  it("should not update a todo created by other", done => {
+    var id = todos[0]._id.toHexString();
+    var updatedTodo = {
+      completed: true
+    };
+    request(app)
+      .patch(`/todos/${id}`)
+      .set("x-auth", users[1].tokens[0].token)
+      .send(updatedTodo)
+      .expect(404)
+      .end(done);
+  });
+  
   it("should clear completedAt when todo is not completed", done => {
     var id = todos[1]._id.toHexString();
     var updatedTodo = {
@@ -152,6 +191,7 @@ describe("PATCH /todos/id", () => {
     };
     request(app)
       .patch(`/todos/${id}`)
+      .set("x-auth", users[1].tokens[0].token)
       .send(updatedTodo)
       .expect(200)
       .expect(res => {
@@ -166,6 +206,7 @@ describe("PATCH /todos/id", () => {
     };
     request(app)
       .patch(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .send(updatedTodo)
       .expect(404)
       .end(done);
@@ -177,6 +218,7 @@ describe("PATCH /todos/id", () => {
     };
     request(app)
       .patch(`/todos/${id}`)
+      .set("x-auth", users[0].tokens[0].token)
       .send(updatedTodo)
       .expect(404)
       .end(done);

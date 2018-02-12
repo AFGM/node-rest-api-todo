@@ -8,11 +8,11 @@ var routes = app => {
   //Get All Todos
   app.get("/todos",authenticate, todoController.findAll);
   //Find Todo by Id
-  app.get("/todos/:id", todoController.findByID);
+  app.get("/todos/:id",authenticate, todoController.findByID);
   //Delete Todo by Id
-  app.delete("/todos/:id", todoController.deleteById);
+  app.delete("/todos/:id",authenticate, todoController.deleteById);
   //Update Todo
-  app.patch("/todos/:id", todoController.update);
+  app.patch("/todos/:id",authenticate, todoController.update);
   //Create User
   app.post("/users", userController.create);
   //Get user info

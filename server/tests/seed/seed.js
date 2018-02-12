@@ -21,7 +21,13 @@ const users = [
   {
     _id: userTwoId,
     email: "filipe@gmail.com",
-    password: "usertwopass"
+    password: "usertwopass",
+    tokens: [
+      {
+        access: "auth",
+        token: jwt.sign({ _id: userTwoId, access: "auth" }, "123").toString()
+      }
+    ]
   }
 ];
 
@@ -59,4 +65,4 @@ const populateUsers = done => {
     .then(() => done());
 };
 
-module.exports = { todos, populateTodos, users,populateUsers };
+module.exports = { todos, populateTodos, users, populateUsers };

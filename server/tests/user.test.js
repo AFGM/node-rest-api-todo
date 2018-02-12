@@ -129,7 +129,6 @@ describe("POST /users/login", () => {
 
 describe("DELETE /users/me/token", () => {
   it("should remove auth token on logout", done => {
-    //console.log(users[0])
     var token = users[0].tokens[0].token;
     request(app)
       .delete("/users/me/token")
@@ -141,7 +140,6 @@ describe("DELETE /users/me/token", () => {
         }
         User.findById(users[0]._id)
           .then(user => {
-            console.log(user)
             expect(user.tokens.length).toBe(0);
             done();
           })

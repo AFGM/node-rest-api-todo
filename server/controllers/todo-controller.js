@@ -9,7 +9,8 @@ const _ = require("lodash");
  */
 exports.create = (req, res) => {
   var todo = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    _creator: req.user._id
   });
   todo
     .save()
@@ -25,7 +26,9 @@ exports.create = (req, res) => {
  * @param {*} res
  */
 exports.findAll = (req, res) => {
-  Todo.find({})
+  Todo.find({
+    _creator: req.user._id
+  })
     .then(todos => {
       res.send({ todos }); //send object instead array so can add more fields to JSON
     })
@@ -78,8 +81,8 @@ exports.deleteById = (req, res) => {
 
 /**
  * Update a Todo by Id
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 exports.update = (req, res) => {
   var id = req.params.id;
@@ -98,7 +101,7 @@ exports.update = (req, res) => {
       if (!todo) {
         res.status(404).send();
       }
-      res.send({todo});
+      res.send({ todo });
     })
     .catch(e => res.status(404).send());
 };

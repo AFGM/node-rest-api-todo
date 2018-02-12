@@ -4,9 +4,9 @@ var { authenticate } = require("../middleware/authenticate");
 
 var routes = app => {
   //Create Todo
-  app.post("/todos", todoController.create);
+  app.post("/todos",authenticate, todoController.create);
   //Get All Todos
-  app.get("/todos", todoController.findAll);
+  app.get("/todos",authenticate, todoController.findAll);
   //Find Todo by Id
   app.get("/todos/:id", todoController.findByID);
   //Delete Todo by Id

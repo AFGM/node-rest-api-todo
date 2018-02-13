@@ -1,5 +1,6 @@
 //config env
 require("../server/config/config");
+
 //Library Imports
 var express = require("express");
 var bodyParser = require("body-parser");
@@ -15,6 +16,7 @@ routes(app); //app routings
 
 app.listen(port, () => {
   console.log(`Started on port ${port}!`);
+  console.log(process.env)
 });
 
 module.exports = { app };

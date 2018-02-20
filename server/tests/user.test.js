@@ -41,8 +41,8 @@ describe("POST /users", () => {
       .expect(200)
       .expect(res => {
         expect(res.body.email).toBe(mockUser.email);
-        expect(res.body._id).toExist();
-        expect(res.headers["x-auth"]).toExist();
+        expect(res.body._id).toBeTruthy();
+        expect(res.headers["x-auth"]).toBeTruthy();
       })
       .end(err => {
         if (err) {
@@ -50,8 +50,8 @@ describe("POST /users", () => {
         }
         User.findOne({ email: mockUser.email })
           .then(user => {
-            expect(user).toExist();
-            expect(user.password).toNotBe(mockUser.password);
+            expect(user).toBeTruthy();
+            expect(user.password).not.toBe(mockUser.password);
             done();
           })
           .catch(e => done(e));
@@ -96,7 +96,7 @@ describe("POST /users/login", () => {
       .expect(res => {
         expect(res.body._id).toBe(users[0]._id.toHexString());
         expect(res.body.email).toBe(users[0].email);
-        expect(res.headers["x-auth"]).toExist();
+        expect(res.headers["x-auth"]).toBeTruthy();
       })
       .end((err, res) => {
         if (err) {
@@ -104,7 +104,7 @@ describe("POST /users/login", () => {
         }
         User.findById({ _id: users[0]._id })
           .then(user => {
-            expect(user.tokens[1]).toInclude({
+            expect(user.toObject().tokens[1]).toMatchObject({
               access: "auth",
               token: res.headers["x-auth"]
             });
@@ -135,7 +135,7 @@ describe("DELETE /users/me/token", () => {
       .set("x-auth", token)
       .expect(200)
       .end((err, res) => {
-        if(err){
+        if (err) {
           return done(err);
         }
         User.findById(users[0]._id)
@@ -146,12 +146,12 @@ describe("DELETE /users/me/token", () => {
           .catch(e => done(e));
       });
   });
-  it("should return 401 for non valid token",done => {
-     var token = users[0].tokens[0].token + "123";
-     request(app)
+  it("should return 401 for non valid token", done => {
+    var token = users[0].tokens[0].token + "123";
+    request(app)
       .delete("/users/me/token")
       .set("x-auth", token)
       .expect(401)
-      .end(done)
-  })
+      .end(done);
+  });
 });

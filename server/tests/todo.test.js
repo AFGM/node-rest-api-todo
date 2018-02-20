@@ -195,7 +195,7 @@ describe("PATCH /todos/id", () => {
       .send(updatedTodo)
       .expect(200)
       .expect(res => {
-        expect(res.body.todo.completedAt).toNotExist();
+        expect(res.body.todo.completedAt).toBeFalsy();
       })
       .end(done);
   });

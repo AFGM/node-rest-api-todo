@@ -89,7 +89,7 @@ exports.deleteById = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ["text", "completed"]);
   if (!ObjectID.isValid(id)) {
@@ -101,16 +101,17 @@ exports.update = (req, res) => {
     body.completed = false;
     body.completedAt = null;
   }
-  Todo.findOneAndUpdate(
-    { _id: id, _creator: req.user._id },
-    { $set: body },
-    { new: true }
-  )
-    .then(todo => {
-      if (!todo) {
+  try{
+    const todo = await Todo.findOneAndUpdate(
+        { _id: id, _creator: req.user._id },
+        { $set: body },
+        { new: true }
+      )
+      if(!todo){
         res.status(404).send();
       }
-      res.send({ todo });
-    })
-    .catch(e => res.status(404).send());
+      res.send({todo})
+  }catch(e){
+    res.status(404).send();
+  }
 };

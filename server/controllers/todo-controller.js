@@ -65,24 +65,23 @@ exports.findByID = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.deleteById = (req, res) => {
+exports.deleteById = async (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
-  Todo.findOneAndRemove({
-    _id: id,
-    _creator: req.user._id
-  })
-    .then(todo => {
-      if (!todo) {
-        return res.status(404).send();
-      }
-      res.send({ todo });
+  try{
+    const todo = await Todo.findOneAndRemove({
+      _id: id,
+      _creator: req.user._id
     })
-    .catch(e => {
-      res.status(400).send();
-    });
+    res.send({todo})
+    if(!todo){
+      return res.status(404).send();
+    }
+  }catch(e){
+    res.status(400).send();
+  }
 };
 
 /**

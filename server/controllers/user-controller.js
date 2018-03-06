@@ -1,4 +1,6 @@
-const { User } = require("../models/user");
+const {
+  User
+} = require("../models/user");
 const _ = require("lodash");
 
 /**
@@ -6,18 +8,17 @@ const _ = require("lodash");
  * @param {*} req
  * @param {*} res
  */
-exports.create = (req, res) => {
-  var body = _.pick(req.body, ["email", "password"]);
-  var user = new User(body);
-  user
-    .save()
-    .then(() => {
-      return user.generateAuthToken();
-    })
-    .then(token => {
-      res.header("x-auth", token).send(user); //custom header
-    })
-    .catch(e => res.status(404).send(e));
+exports.create = async (req, res) => {
+  try{
+    var body = _.pick(req.body, ["email", "password"]);
+    var user = new User(body);
+    await user.save();
+    const token = await user.generateAuthToken();
+    res.header("x-auth", token).send(user);
+  }catch(e){
+    res.status(404).send(e)
+  }
+
 };
 
 /**
@@ -34,26 +35,22 @@ exports.info = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.login = (req, res) => {
-  var body = _.pick(req.body, ["email", "password"]);
-  User.findByCredentials(body.email, body.password)
-    .then(user => {
-      return user.generateAuthToken().then(token => {
-        res.header("x-auth", token).send(user); //custom header
-      });
-    })
-    .catch(e => {
-      res.status(400).send();
-    });
+exports.login = async (req, res) => {
+  try {
+    const body = _.pick(req.body, ["email", "password"]);
+    const user = await User.findByCredentials(body.email, body.password);
+    const token = await user.generateAuthToken();
+    res.header("x-auth", token).send(user);
+  } catch (e) {
+    res.status(400).send();
+  }
 };
 
-exports.logout = (req, res) => {
-  req.user.removeToken(req.token).then(
-    () => {
-      res.status(200).send();
-    },
-    () => {
-      res.status(400).send();
-    }
-  );
+exports.logout = async (req, res) => {
+  try {
+    await req.user.removeToken(req.token);
+    res.status(200).send();
+  } catch (e) {
+    res.status(400).send();
+  }
 };
